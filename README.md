@@ -11,5 +11,5 @@ b = minblocksize
   Adjust file paths accordingly
   file paths must be accessible/writeable by web user
   
-## Pre-Requiesites
+## Pre-Requisites
   zboxcli binary and wallet already present and functional in ~.zcn folder, again with user permissions
