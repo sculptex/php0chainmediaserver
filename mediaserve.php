@@ -38,6 +38,8 @@ $data = json_decode($jsonauth, TRUE);
 $fileName = $data['file_name'];
 $allocationId = $data['allocation_id'];
 
+checkWallet();
+
 $metaRes = getMetaRes($a);
 
 $fileData = json_decode($metaRes, TRUE);
