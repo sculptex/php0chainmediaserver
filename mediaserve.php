@@ -2,86 +2,11 @@
 
 // CONFIG
 
-define("PREFIX_PATH", "");		// NORMALLLY NOT UNDER PUBLIC DOC ROOT BUT ENSURE USER HAS PERMISSION
-define("META_PATH"	, "meta/");
-define("ALLO_PATH"	, "allo/");
-define("FILE_PATH"	, "file/");
-define("HASH_EXT"	, ".hash");
-
-define("BLOCK_SIZE" , 65536);
-
-define("MIN_BLOCKS"	, 20);
-define("MAX_BLOCKS"	, 200);
-
-if(!is_dir(PREFIX_PATH.META_PATH)) { mkdir(PREFIX_PATH.META_PATH); }
-if(!is_dir(PREFIX_PATH.ALLO_PATH)) { mkdir(PREFIX_PATH.ALLO_PATH); }
-if(!is_dir(PREFIX_PATH.FILE_PATH)) { mkdir(PREFIX_PATH.FILE_PATH); }
-
+include("config.php");
 
 // FUNCTIONS
 
-function zboxcmd($cmd, $params) {
-	$zboxbinarypath = "/home/zcdn/.zcn/";
-	$zboxbinarycmd = "zbox";
-	$zcmd = $zboxbinarypath.$zboxbinarycmd." ".$cmd." ".implode(" ", $params);
-	$arr = array();
-	$dummy = exec($zcmd, $arr);
-				
-	$res = implode("<br>",$arr);
-	if($res == "") {
-		$res = $dummy;
-	}
-	return($res);
-}
-
-function getAuth() {
-	if(isset($_GET['a'])) {
-		$a = $_GET['a'];
-	}
-	else
-	{
-		$a = FALSE;
-	}
-	return($a);
-}
-
-function getHash($h) {
-	return(md5($h));
-}
-
-function getMetaRes($a) {
-	// CACHE AUTHTICKET BY ITS HASH
-	$authHash = getHash($a);
-	$metaFile = PREFIX_PATH.META_PATH.$authHash.HASH_EXT;
-	if(file_exists($metaFile)) {
-		$metaRes = file_get_contents($metaFile);
-	}
-	else
-	{
-		$metaRes = zboxcmd("meta", array( "--wallet", "config_webserver.json", "--authticket", $a, "--json" ) );
-		file_put_contents($metaFile, $metaRes);
-	}
-	return($metaRes);	
-}
-
-function getAlloRes($allocationid) {
-	// CACHE ALLOCATION BY ITS HASH
-	$alloHash = $allocationid;
-	if(!is_dir(PREFIX_PATH.ALLO_PATH)) {
-		mkdir(PREFIX_PATH.ALLO_PATH);
-	}
-	$alloFile = PREFIX_PATH.ALLO_PATH.$alloHash.HASH_EXT;
-	if(file_exists($alloFile)) {
-		$alloRes = file_get_contents($alloFile);
-	}
-	else
-	{
-		$alloRes = zboxcmd("get", array( "--wallet", "config_webserver.json", "--allocation", $allocationid, "--json" ) );
-		file_put_contents($alloFile, $alloRes);
-	}
-	return($alloRes);
-}
-
+include("functions.php");
 
 // MAIN
 
@@ -215,9 +140,10 @@ if($sendrange){
 		$hashChunkFileName = $hashFileName.".".($dataShards*$chunkMult).".".$chunkno;
 
 		if(!file_exists($hashChunkFileName)) {
-			$chunkRes = zboxcmd("download", array( "--wallet", "config_webserver.json", "--authticket", $a, "--localpath", $hashChunkFileName, "--startblock", (($chunkno-1)*$chunkMult)+1, "--endblock", (($chunkno-1)*$chunkMult)+$chunkMult, "--blockspermarker", $chunkMult ) );
+			$chunkRes = zboxcmd("download", array( "--authticket", $a, "--localpath", $hashChunkFileName, "--startblock", (($chunkno-1)*$chunkMult)+1, "--endblock", (($chunkno-1)*$chunkMult)+$chunkMult, "--blockspermarker", $chunkMult ) );
 		}
 		if(file_exists($hashChunkFileName)) {
+			touch($hashChunkFileName);	// refresh file time stamp to delay deletion from cache
 			$gotfile = TRUE;
 			$f = fopen($hashChunkFileName, 'rb');
 		    fseek($f, $chunkseekstart);			
@@ -252,7 +178,7 @@ else
 	// WHOLE FILE REQUESTED (may not be partial compatible)
 	if(!file_exists($hashFileName)) {
 		// Doesn't exist so get whole file
-		$chunkRes = zboxcmd("download", array( "--wallet", "config_webserver.json", "--authticket", $a, "--localpath", $hashFileName ) );
+		$chunkRes = zboxcmd("download", array("--authticket", $a, "--localpath", $hashFileName ) );
 	}
 	if(file_exists($hashFileName)) {
 		$gotfile = TRUE;
@@ -276,3 +202,7 @@ else
 // and flush the buffer
 @ob_flush();
 flush();
+
+if(defined("CRONDEMAND") && CRONDEMAND) {
+	include("cron.php");
+}
