@@ -75,6 +75,17 @@ function getHash($h) {
 	return(md5($h));
 }
 
+function checkWallet() {
+	// CACHE AUTHTICKET BY ITS HASH
+	
+	global $network;
+	
+	if(!file_exists(ZCN_PATH.$network."_webserver.json")) {
+		$dummyRes = zboxcmd("register", array() );
+	}
+	return($dummyRes);	
+}
+
 function getMetaRes($a) {
 	// CACHE AUTHTICKET BY ITS HASH
 		
