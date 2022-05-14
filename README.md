@@ -12,4 +12,14 @@ b = minblocksize
   file paths must be accessible/writeable by web user
   
 ## Pre-Requisites
-  zboxcli binary and wallet already present and functional in ~.zcn folder, again with user permissions
+* zbox CLI binary and network config(s) already present and functional in ~.zcn folder, again with user permissions
+* Default to networks:- beta.yaml, dev.yaml, test.yaml
+
+# Update
+
+* Split out files:-
+  * config.php - Editable config file
+  * functions.php - Re-usable functions
+  * cron.php - Removes old file chunks
+* cron.php (to delete older file chunks) can be called from main script by setting CRONDEMAND in config.php
+* Wallet auto-created if doesn't exist
