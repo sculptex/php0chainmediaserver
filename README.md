@@ -39,6 +39,8 @@ network = network(.yaml) config file to be used ( ~/.zcn folder )
     nano config.yaml
 
 ## HestiaCP
+Note: these scripts use default admin account, this is for simplicity of demonstration and not recommended for production
+
 ### Initialize hestiacp installation
     bash init-hestia.sh 
 ### Reboot for settings to take effect
