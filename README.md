@@ -24,3 +24,29 @@ network = network(.yaml) config file to be used ( ~/.zcn folder )
   * cron.php - Removes old file chunks
 * cron.php (to delete older file chunks) can be called from main script by setting CRONDEMAND in config.php
 * Wallet auto-created if doesn't exist
+
+
+# Sample Quick Start Install Scripts
+
+## Common Instructions
+### Deploy fresh server (Ubuntu 20.04lts)
+### Clone this repo
+
+    git clone https://github.com/sculptex/php0chainmediaserver.git
+
+### Edit config.sh
+    cd php0chainmediaserver
+    nano config.yaml
+
+## HestiaCP
+### Initialize hestiacp installation
+    bash init-hestia.sh 
+### Reboot for settings to take effect
+    reboot
+### Deploy php scripts to web folder
+    cd php0chainmediaserver
+    bash initweb-hestia.sh
+
+## Common Instructions
+### Install required .zcn folder and tools
+    bash initzcn.sh
