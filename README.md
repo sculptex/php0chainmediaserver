@@ -2,10 +2,11 @@
 Media Server for 0chain, serves media files via partial content where allowed
 
 ## Use
-  mediaserve.php?a=xx&b=nn
+  mediaserve.php?a=xx&b=nn&network=beta
 
 a = authticket
 b = minblocksize
+network = network(.yaml) config file to be used ( ~/.zcn folder )
 
 ## Notes
   Adjust file paths accordingly
