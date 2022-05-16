@@ -30,6 +30,7 @@ network = network(.yaml) config file to be used ( ~/.zcn folder )
 
 ## Common Instructions
 ### Deploy fresh server (Ubuntu 20.04lts)
+### Set up domain to point to its IP address
 ### Clone this repo
 
     git clone https://github.com/sculptex/php0chainmediaserver.git
