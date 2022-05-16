@@ -37,7 +37,7 @@ network = network(.yaml) config file to be used ( ~/.zcn folder )
 
 ### Edit config.sh
     cd php0chainmediaserver
-    nano config.yaml
+    nano config.sh
 
 ## HestiaCP
 Note: these scripts use default admin account, this is for simplicity of demonstration and not recommended for production
